@@ -1,0 +1,34 @@
+- name: Linda
+  id: linda72
+  device_trackers:
+    - device_tracker.google_maps_114403079766158975440
+    - device_tracker.08_c5_e1_57_9d_b1
+
+
+- name: Tony
+  id: tony71
+  device_trackers:
+    - device_tracker.0c_b5_27_e9_5e_4b
+    - device_tracker.google_maps_107741091199665179487
+    - device_tracker.huawei_p30
+   
+ 
+- name: Emil
+  id: emil01
+  device_trackers:
+    - device_tracker.google_maps_110668184229239559770
+    
+- name: Maja
+  id: maja01
+  device_trackers:
+    - device_tracker.google_maps_115254029541244070884
+    - device_tracker.4c_66_41_6c_fa_f5   
+    
+- name: Lisa
+  id: lisa01
+  device_trackers:
+    - device_tracker.google_maps_117022351928877214324
+    - device_tracker.libban2
+#    - device_tracker.14_5f_94_39_b8_f7
+  
+    

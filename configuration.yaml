@@ -1,0 +1,160 @@
+
+# Configure a default setup of Home Assistant (frontend, api, etc)
+default_config:
+
+# Uncomment this if you are using SSL/TLS, running in Docker container, etc.
+# http:
+#   base_url: example.duckdns.org:8123
+
+# Text to speech
+tts:
+  - platform: google_translate
+
+group: !include groups.yaml
+automation: !include automations.yaml
+script: !include scripts.yaml
+zone: !include zones.yaml
+person: !include persons.yaml
+#customize: !include customize.yaml
+
+python_script:
+
+recorder:
+    
+influxdb:
+  host: a0d7b954-influxdb
+  port: 8086
+  database: hemautomation
+  username: grafana
+  password: password123
+  max_retries: 3
+  default_measurement: state
+
+
+camera:
+  - platform: onvif
+    host: 10.212.4.10
+    port: 8899
+    password: Password123123
+    
+  - platform: arlo
+    ffmpeg_arguments: '-pred 1 -q:v 2'
+ 
+sensor:
+ - platform: command_line
+   name: CPU Temperature
+   command: "cat /sys/class/thermal/thermal_zone0/temp"
+   unit_of_measurement: "°C"
+   value_template: '{{ (value | multiply(0.001)) | round(1) }}'
+   
+ - platform: pushbullet
+   api_key: o.z7Mlof7PSUvp9E15F3RyqHjt71oaHTt2
+   monitored_conditions:
+      - body
+      - title
+      
+ - platform: statistics
+   entity_id: binary_sensor.vibration_2
+   sampling_size: 1000
+   precision: 0
+   name: Vibrationssensor
+   
+ - platform: statistics
+   entity_id: binary_sensor.tradfri_motion_sensor
+   sampling_size: 1000
+   precision: 0
+   name: Rörelsesensor
+   
+ - platform: arlo
+   monitored_conditions:
+     - captured_today
+     - last_capture
+
+ - platform: systemmonitor
+   resources:
+     - type: disk_use_percent
+       arg: /
+     - type: disk_free
+       arg: /
+     - type: memory_free
+     - type: memory_use
+     - type: load_1m
+     - type: load_5m
+     - type: load_15m
+     - type: processor_use
+     - type: last_boot
+
+   
+input_select:
+  dishwasher_status:
+    name: Status Diskmaskin
+    options:
+      - Smutsig
+      - Diskar
+      - Ren
+    initial: Smutsig
+  washing_machine_status:
+    name: Status Tvättmaskin
+    options:
+      - Inaktiv
+      - Tvättar
+      - Avslutar
+      - Ren
+    initial: Inaktiv
+      
+notify:
+  - name: tony
+    platform: pushbullet
+    api_key: o.0tDz3BQdCEvQvbuVVQruWXXWqspYwTWw
+    
+arlo:
+  username: tony@johanssononline.net
+  password: Password123!
+
+asuswrt:
+  host: 10.212.4.222
+  username: admin
+  password: password321
+  protocol: ssh
+  mode: ap
+#  sensors:
+#    - upload
+#    - download
+#    - upload_speed
+#    - download_speed
+#
+device_tracker:
+  - platform: asuswrt
+    host: 10.212.4.222
+    username: admin
+    password: password321
+    protocol: ssh
+    mode: ap
+    new_device_defaults:
+      track_new_devices: true
+      hide_if_away: false
+      
+  - platform: bluetooth_tracker
+    interval_seconds: 15
+    consider_home: 150
+    track_new_devices: yes
+    
+  - platform: google_maps
+    username: bender.johansson@gmail.com
+    max_gps_accuracy: 200
+ 
+counter:
+  cat_counter:
+    name: Katträknare
+    initial: 0
+    step: 1
+    icon: mdi:cat
+ 
+#speedtestdotnet:
+#  scan_interval:
+#    minutes: 
+#  monitored_conditions:
+#    - ping
+#    - download
+#    - upload
+    

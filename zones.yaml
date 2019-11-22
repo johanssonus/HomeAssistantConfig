@@ -1,0 +1,53 @@
+- name: Ductus
+  latitude: 59.857702
+  longitude: 17.639859
+  radius: 50
+  icon: mdi:paw
+  
+- name: Home
+  latitude: 59.869347
+  longitude: 17.681411
+  radius: 50
+  icon: mdi:account-multiple
+  
+- name: Katedralskolan
+  latitude: 59.859276
+  longitude: 17.624276
+  radius: 200
+  icon: mdi:school
+
+- name: Palmbladsskolan
+  latitude: 59.861477
+  longitude: 17.701639
+  radius: 200
+  icon: mdi:school
+
+- name: Taxi
+  latitude: 59.874414
+  longitude: 17.640254
+  radius: 100
+  icon: mdi:taxi
+  
+- name: Garaget
+  latitude: 59.869907
+  longitude: 17.680045
+  radius: 50
+  icon: mdi:garage
+  
+- name: GC
+  latitude: 59.877153
+  longitude: 17.673944
+  radius: 300
+  icon: mdi:shopping
+  
+- name: ISHALL
+  latitude: 59.880960
+  longitude: 17.657417
+  radius: 300
+  icon: mdi:skate
+  
+- name: SKRAPAN
+  latitude: 59.837572
+  longitude: 17.652350
+  radius: 300
+  icon: mdi:school

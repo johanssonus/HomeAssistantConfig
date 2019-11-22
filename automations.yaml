@@ -1,0 +1,160 @@
+- alias: Set dishwasher active when power detected
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.sp_120_2
+    above: 10
+  condition:
+    condition: or
+    conditions:
+    - condition: state
+      entity_id: input_select.dishwasher_status
+      state: Smutsig
+    - condition: state
+      entity_id: input_select.dishwasher_status
+      state: Ren
+  action:
+  - service: input_select.select_option
+    data:
+      entity_id: input_select.dishwasher_status
+      option: Diskar
+  id: a09ebd7890d24b749a69a2f9af71b625
+- alias: Set dishwasher ready when power drops
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.sp_120_2
+    below: 1
+    for:
+      minutes: 2
+  condition:
+    condition: and
+    conditions:
+    - condition: state
+      entity_id: input_select.dishwasher_status
+      state: Diskar
+  action:
+  - service: input_select.select_option
+    data:
+      entity_id: input_select.dishwasher_status
+      option: Ren
+  id: 335169bbedb04d7da70b77cc66ce1405
+- alias: Send alert when dishwasher is clean
+  trigger:
+  - platform: state
+    entity_id: input_select.dishwasher_status
+    to: Ren
+  condition:
+    condition: and
+    conditions:
+    - condition: time
+      before: 00:00:00
+      after: 07:00:00
+    - condition: state
+      entity_id: input_select.dishwasher_status
+      state: Ren
+  action:
+  - service: notify.tony
+    data:
+      message: Disken är klar och redo att plockas ur
+      title: Disken är klar!
+  id: 078b51ce50a74994a34a64f1ac078a9d
+- alias: Tänd lampa vid rörelse
+  trigger:
+    platform: state
+    entity_id: binary_sensor.tradfri_motion_sensor
+    to: 'on'
+  action:
+  - service: light.turn_on
+    data:
+      entity_id: light.ikea
+      brightness: 10
+  - service: notify.tony
+    data:
+      message: Någonting rör sig
+      title: Rörelse!
+  id: eddea9b81090483bb2b14cd1ec70ee06
+- alias: Släck lampan x minuter efter rörelse
+  trigger:
+    platform: state
+    entity_id: binary_sensor.tradfri_motion_sensor
+    to: 'off'
+    for:
+      minutes: 1
+  action:
+  - service: light.turn_off
+    entity_id: light.ikea
+  - service: notify.tony
+    data:
+      message: Ingenting verkar röra sig
+      title: Allt lugnt!
+  id: 66abc3c321e74450873716926b8a0fe5
+- id: '1574198830583'
+  alias: Släck lampa med off
+  description: ''
+  trigger:
+  - device_id: b99b980481bf46268149d376a7ce739c
+    domain: deconz
+    platform: device
+    subtype: turn_off
+    type: remote_button_short_press
+  condition: []
+  action:
+  - device_id: fb17f0d38f484043a6e03c2fd47cd7c4
+    domain: light
+    entity_id: light.ikea
+    type: turn_off
+- id: '1574198974146'
+  alias: Tänd lampa med on
+  description: ''
+  trigger:
+  - device_id: b99b980481bf46268149d376a7ce739c
+    domain: deconz
+    platform: device
+    subtype: turn_on
+    type: remote_button_short_press
+  condition: []
+  action:
+  - device_id: fb17f0d38f484043a6e03c2fd47cd7c4
+    domain: light
+    entity_id: light.ikea
+    type: turn_on
+- alias: Toggle lamp from dimmer
+  initial_state: 'on'
+  trigger:
+    platform: event
+    event_type: deconz_event
+    event_data:
+      id: b99b980481bf46268149d376a7ce739c
+      event: 1002
+  action:
+    service: light.toggle
+    entity_id: light.ikea
+- alias: Increase brightness of lamp from dimmer
+  initial_state: 'on'
+  trigger:
+    platform: event
+    event_type: deconz_event
+    event_data:
+      id: b99b980481bf46268149d376a7ce739c
+      event: 2002
+  action:
+  - service: light.turn_on
+    data_template:
+      entity_id: light.ikea
+      brightness: '{% set bri = state_attr(''light.ikea'', ''brightness'') | int %}
+        {{ [bri+30, 249] | min }}
+
+        '
+- alias: Decrease brightness of lamp from dimmer
+  initial_state: 'on'
+  trigger:
+    platform: event
+    event_type: deconz_event
+    event_data:
+      id: b99b980481bf46268149d376a7ce739c
+      event: 3002
+  action:
+  - service: light.turn_on
+    data_template:
+      entity_id: light.ikea
+      brightness: '{% set bri = state_attr(''light.ikea'', ''brightness'') | int %}
+        {{ [bri-30, 0] | max }}'
